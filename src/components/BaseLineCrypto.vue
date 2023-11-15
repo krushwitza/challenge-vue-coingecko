@@ -64,7 +64,7 @@ const orderedSparkLabels = computed(() => {
 
 <template>
   <div
-    class="line-crypto w-100 block flex flex-1 h-16 mb-1 cursor-pointer"
+    class="line-crypto w-100 flex flex-1 h-16 mb-1 cursor-pointer"
     @click="
       (event) =>
         $router.push({
