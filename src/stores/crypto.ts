@@ -117,7 +117,7 @@ export const useCryptoStore = defineStore({
             response.data
           );
           if (responseArray.length) {
-            responseArray.map((value) => {
+            responseArray.forEach((value) => {
               const key = value.id;
               const item = this.cryptoList.get(key);
               if (item) {

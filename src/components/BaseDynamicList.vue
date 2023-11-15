@@ -155,7 +155,7 @@ defineExpose({
         :is="props.component"
         v-for="item in orderedList"
         :key="`${item[props.componentKey]}`"
-        :item-id="item.id"
+        :item="item"
       />
     </template>
   </div>
