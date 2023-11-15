@@ -23,6 +23,7 @@ import { TCryptoData } from "@/stores/crypto.types";
 import { IAppProvider } from "@/providers/app";
 import { storeToRefs } from "pinia";
 import { useRoute } from "vue-router";
+import { ROUTE_CRYPTO_OVERVIEW, ROUTE_CRYPTO_FAVORITES } from "../../app.routes";
 
 type TEventLists = {
   newList: TCryptoData[];
@@ -84,6 +85,7 @@ watch(
 );
 
 onMounted(async () => {
+  if (route.name === ROUTE_CRYPTO_OVERVIEW.name) return
   fetchCryptosInfos(
     Array.from(props.cryptoList)
       .map(([key, value]) => value)
