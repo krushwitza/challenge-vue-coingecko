@@ -10,7 +10,7 @@ import useCurrencySymbol from "@/composables/useCurrencySymbol";
 import { ROUTE_CRYPTO_VIEW } from "@/app.routes";
 
 const props = defineProps<{
-    itemId: string,
+    item: TCryptoData,
 }>();
 
 const cryptoStore = useCryptoStore();
@@ -18,7 +18,7 @@ const cryptoStore = useCryptoStore();
 const { currencyActive, cryptoList, cryptoFavorites } = storeToRefs(cryptoStore);
 const { addFavorite, removeFavorite } = cryptoStore;
 
-const crypto = ref(cryptoList.value.get(props.itemId) as TCryptoData)
+// const crypto = ref(cryptoList.value.get(props.itemId) as TCryptoData)
 
 const currencySymbol = computed(() => useCurrencySymbol(currencyActive.value));
 
@@ -26,13 +26,13 @@ const chartElement = ref();
 const chartIsVisible = ref(false);
 
 const isInFavorites = computed(() =>
-  crypto.value ? (cryptoFavorites.value.get(crypto.value.id) ? true : false): false
+  props.item ? (cryptoFavorites.value.get(props.item.id) ? true : false): false
 );
 
 const toggleFavorite = () => {
-  if (isInFavorites.value && crypto.value) {
-    removeFavorite(crypto.value);
-  } else if (crypto.value) addFavorite(crypto.value);
+  if (isInFavorites.value && props.item) {
+    removeFavorite(props.item);
+  } else if (props.item) addFavorite(props.item);
 };
 
 useIntersectionObserver(chartElement, ([{ isIntersecting }]) => {
@@ -40,9 +40,9 @@ useIntersectionObserver(chartElement, ([{ isIntersecting }]) => {
 });
 
 const calculatedSparkline = computed(() => {
-  if (!crypto?.value?.sparkline_in_7d?.length) return [] as number[];
+  if (!props.item?.sparkline_in_7d?.length) return [] as number[];
 
-  const toReduce = crypto.value.sparkline_in_7d;
+  const toReduce = props.item.sparkline_in_7d;
 
   const reduced = toReduce.reduce((acc, val, index) => {
     if (index && index % 23 === 0) acc.push(val);
@@ -69,14 +69,14 @@ const orderedSparkLabels = computed(() => {
       (event) =>
         $router.push({
           name: ROUTE_CRYPTO_VIEW.name,
-          params: { id: crypto.id },
+          params: { id: props.item.id },
         })
     "
   >
     <div class="flex w-20 pl-2 pr-2 items-center">
       <img
-        v-if="crypto.image"
-        v-lazy="crypto.image"
+        v-if="props.item.image"
+        v-lazy="props.item.image"
         class="w-8 h-8 border-round rounded-full"
       />
       <Spinner v-else color="#DDD" size="small" class="inline-block mx-auto" />
@@ -85,28 +85,28 @@ const orderedSparkLabels = computed(() => {
       class="flex w-48 pl-4 pr-4 items-center text-black dark:text-white p-2 font-bold"
     >
       {{
-        crypto.name.length > 20 ? crypto.name.slice(0, 20) + "..." : crypto.name
+        props.item.name.length > 20 ? props.item.name.slice(0, 20) + "..." : props.item.name
       }}
     </div>
     <div class="flex pl-4 pr-4 w-44 items-center text-black dark:text-white">
       <template
-        v-if="crypto?.pricesByCurrencies[currencyActive]?.current_price"
+        v-if="props.item?.pricesByCurrencies[currencyActive]?.current_price"
       >
-        {{ crypto.pricesByCurrencies[currencyActive].current_price }}
+        {{ props.item.pricesByCurrencies[currencyActive].current_price }}
         {{ currencySymbol }}
       </template>
       <div v-else class="text-sm border-1 text-gray-300">N/A</div>
     </div>
     <div class="flex pl-4 pr-4 w-36 items-center text-black dark:text-white">
-      <template v-if="crypto?.pricesByCurrencies[currencyActive]?.market_cap">
-        {{ crypto.pricesByCurrencies[currencyActive].market_cap }}
+      <template v-if="props.item?.pricesByCurrencies[currencyActive]?.market_cap">
+        {{ props.item.pricesByCurrencies[currencyActive].market_cap }}
         {{ currencySymbol }}
       </template>
       <div v-else class="text-sm border-1 text-gray-300">N/A</div>
     </div>
     <div class="flex pl-4 pr-4 w-40 items-center text-black dark:text-white">
-      <template v-if="crypto?.pricesByCurrencies[currencyActive]?.total_volume">
-        {{ crypto.pricesByCurrencies[currencyActive].total_volume }}
+      <template v-if="props.item?.pricesByCurrencies[currencyActive]?.total_volume">
+        {{ props.item.pricesByCurrencies[currencyActive].total_volume }}
         {{ currencySymbol }}
       </template>
       <div v-else class="text-sm border-1 text-gray-300">N/A</div>
