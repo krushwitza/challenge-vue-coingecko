@@ -23,7 +23,7 @@ const crypto = ref(cryptoList.value.get(props.itemId) as TCryptoData)
 const currencySymbol = computed(() => useCurrencySymbol(currencyActive.value));
 
 const chartElement = ref();
-const chartIsVisible = ref(true);
+const chartIsVisible = ref(false);
 
 const isInFavorites = computed(() =>
   crypto.value ? (cryptoFavorites.value.get(crypto.value.id) ? true : false): false
@@ -36,7 +36,7 @@ const toggleFavorite = () => {
 };
 
 useIntersectionObserver(chartElement, ([{ isIntersecting }]) => {
-  chartIsVisible.value = true;
+  if (isIntersecting) chartIsVisible.value = true;
 });
 
 const calculatedSparkline = computed(() => {
